@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../models/todo_model.dart';
 import '../../add_todo/update_delete_todo.dart';
+
 class TodoItem extends StatelessWidget {
   const TodoItem({
     required this.todo,
@@ -26,9 +27,7 @@ class TodoItem extends StatelessWidget {
             arguments: todo,
           ) as TodoModel?;
 
-          if (updatedTodo != null) {
-
-          }
+          if (updatedTodo != null) {}
         },
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -46,10 +45,10 @@ class TodoItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                todo.title,
+                todo.title!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(todo.description),
+              Text(todo.description!),
             ],
           ),
         ),

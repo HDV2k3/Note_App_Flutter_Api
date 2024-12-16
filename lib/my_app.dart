@@ -15,26 +15,26 @@ class MyApp extends StatelessWidget {
       initialRoute: TodoPage.routeName,
       routes: {
         TodoPage.routeName: (context) => const TodoPage(),
-        AddTodoPage.routeName:(context) => AddTodoPage(todo: TodoModel(
-          createdAt: DateTime.now(),
-          description: '',
-          id: '',
-          isCompleted: false,
-          title: '',
-          updatedAt: DateTime.now(),
-        ),
-        ),
+        AddTodoPage.routeName: (context) => AddTodoPage(
+              todo: TodoModel(
+                createdAt: DateTime.now(),
+                description: '',
+                id: '',
+                isCompleted: false,
+                title: '',
+                updatedAt: DateTime.now(),
+              ),
+            ),
         UDTodoPage.routeName: (context) => UDTodoPage(
-          todo: TodoModel(
-            createdAt: DateTime.now(),
-            description: '',
-            id: '',
-            isCompleted: false,
-            title: '',
-            updatedAt: DateTime.now(),
-          ),
-        ),
-
+              todo: TodoModel(
+                createdAt: DateTime.now(),
+                description: '',
+                id: '',
+                isCompleted: false,
+                title: '',
+                updatedAt: DateTime.now(),
+              ),
+            ),
       },
     );
   }

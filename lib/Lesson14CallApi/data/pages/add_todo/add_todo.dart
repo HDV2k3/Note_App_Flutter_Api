@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../api/dio_client.dart';
 import '../../models/todo_model.dart';
+import '../todo/todo_list_page.dart';
+
 class AddTodoPage extends StatefulWidget {
   static const routeName = '/add_todo';
   final TodoModel? todo;
@@ -25,8 +26,8 @@ class _AddTodoPageState extends State<AddTodoPage> {
     super.initState();
     if (widget.todo != null) {
       // Access the todo data from widget.todo
-      titleController.text = widget.todo!.title;
-      descriptionController.text = widget.todo!.description;
+      titleController.text = widget.todo!.title!;
+      descriptionController.text = widget.todo!.description!;
     }
   }
 
@@ -35,8 +36,8 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final TodoModel? todo =
         ModalRoute.of(context)!.settings.arguments as TodoModel?;
     if (todo != null) {
-      titleController.text = todo.title;
-      descriptionController.text = todo.description;
+      titleController.text = todo.title!;
+      descriptionController.text = todo.description!;
     }
     return Scaffold(
       appBar: AppBar(
@@ -60,17 +61,39 @@ class _AddTodoPageState extends State<AddTodoPage> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
-              await _client.createTodo(
+              // Gửi request để tạo Todo mới
+              final newTodo = await _client.createTodo(
                 todoModel: TodoModel(
                   createdAt: DateTime.now(),
                   description: descriptionController.text,
-                  id: '',
-                  isCompleted: false,
+                  id: '', // ID sẽ được API tạo
+                  isCompleted: true,
                   title: titleController.text,
                   updatedAt: DateTime.now(),
                 ),
               );
-              Navigator.pop(context);
+
+              // Nếu thành công, trả về Todo mới và quay lại trang trước
+              if (newTodo != null) {
+                // Navigator.pop(context, newTodo); // Trả về Todo mới
+                // Đăng nhập thành công, chuyển trang
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TodoPage()),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Thêm thành công'),
+                    ),
+                  );
+                }
+              } else {
+                // Hiển thị thông báo lỗi nếu cần
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to add Todo')),
+                );
+              }
             },
             child: const Text('Submit'),
           ),

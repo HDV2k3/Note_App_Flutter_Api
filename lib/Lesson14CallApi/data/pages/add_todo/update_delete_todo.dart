@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:note_app_flutter/Lesson14CallApi/data/pages/todo/todo_list_page.dart';
 
 import '../../api/dio_client.dart';
 import '../../models/todo_model.dart';
@@ -28,8 +28,8 @@ class _UDTodoPageState extends State<UDTodoPage> {
     super.initState();
     if (widget.todo != null) {
       // Access the todo data from widget.todo
-      titleController.text = widget.todo!.title;
-      descriptionController.text = widget.todo!.description;
+      titleController.text = widget.todo!.title!;
+      descriptionController.text = widget.todo!.description!;
     }
   }
 
@@ -38,8 +38,8 @@ class _UDTodoPageState extends State<UDTodoPage> {
     final TodoModel? todo =
         ModalRoute.of(context)!.settings.arguments as TodoModel?;
     if (todo != null) {
-      titleController.text = todo.title;
-      descriptionController.text = todo.description;
+      titleController.text = todo.title!;
+      descriptionController.text = todo.description!;
     }
     return Scaffold(
       appBar: AppBar(
@@ -63,23 +63,73 @@ class _UDTodoPageState extends State<UDTodoPage> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
-              await _client.updateTodo(
+              if (titleController.text.isEmpty ||
+                  descriptionController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please fill all fields')),
+                );
+                return;
+              }
+
+              final updatedTodo = await _client.updateTodo(
                 id: todo!.id.toString(),
                 todoModel: TodoModel(
-                  createdAt: DateTime.now(),
+                  createdAt: todo.createdAt,
                   description: descriptionController.text,
-                  id: idController.text,
-                  isCompleted: false,
+                  id: todo.id,
+                  isCompleted: todo.isCompleted,
                   title: titleController.text,
                   updatedAt: DateTime.now(),
                 ),
               );
+
+              if (updatedTodo != null) {
+                // Navigator.pop(
+                //     context, {'action': 'update', 'todo': updatedTodo});
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TodoPage()),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Cập nhập  thành công'),
+                    ),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to update Todo')),
+                );
+              }
             },
             child: const Text('Update'),
           ),
           ElevatedButton(
             onPressed: () async {
-              await _client.deleteTodo( id: todo!.id.toString());
+              final isDeleted =
+                  await _client.deleteTodo(id: todo!.id.toString());
+
+              if (isDeleted != null) {
+                // Trả về dữ liệu đúng sau khi xóa
+                // Navigator.pop(context, {'action': 'delete', 'id': todo.id});
+                // Đăng nhập thành công, chuyển trang
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TodoPage()),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Xóa thành công'),
+                    ),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to delete Todo')),
+                );
+              }
             },
             child: const Text('Delete'),
           ),

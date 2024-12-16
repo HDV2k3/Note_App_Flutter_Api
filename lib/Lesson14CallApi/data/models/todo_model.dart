@@ -1,25 +1,21 @@
-
-
 import 'package:json_annotation/json_annotation.dart';
-import 'dart:convert';
 
 part 'todo_model.g.dart';
-
 
 @JsonSerializable()
 class TodoModel {
   @JsonKey(name: "_id")
-  String id;
+  String? id;
   @JsonKey(name: "title")
-  String title;
+  String? title;
   @JsonKey(name: "description")
-  String description;
+  String? description;
   @JsonKey(name: "is_completed")
-  bool isCompleted;
+  bool? isCompleted;
   @JsonKey(name: "created_at")
-  DateTime createdAt;
+  DateTime? createdAt;
   @JsonKey(name: "updated_at")
-  DateTime updatedAt;
+  DateTime? updatedAt;
 
   TodoModel({
     required this.id,
@@ -30,7 +26,8 @@ class TodoModel {
     required this.updatedAt,
   });
 
-  factory TodoModel.fromJson(Map<String, dynamic> json) => _$TodoModelFromJson(json);
+  factory TodoModel.fromJson(Map<String, dynamic> json) =>
+      _$TodoModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TodoModelToJson(this);
 }

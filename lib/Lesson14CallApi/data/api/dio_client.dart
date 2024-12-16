@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
 import '../models/responses/todo_responses.dart';
 import '../models/todo_model.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/logging-interceptor.dart';
 
- class DioClient {
+class DioClient {
   final Dio _dio = Dio(
     BaseOptions(
       receiveTimeout: const Duration(seconds: 60),
@@ -31,7 +32,8 @@ import 'interceptors/logging-interceptor.dart';
 
   Future<TodoResponse?> getTodos() async {
     try {
-      final todoData = await _dio.get('https://api.nstack.in/v1/todos?page=1&limit=10');
+      final todoData =
+          await _dio.get('https://api.nstack.in/v1/todos?page=1&limit=10');
       final todoResponse = TodoResponse.fromJson(todoData.data);
 
       return todoResponse;
@@ -79,7 +81,6 @@ import 'interceptors/logging-interceptor.dart';
     try {
       final response = await _dio.delete('https://api.nstack.in/v1/todos/$id');
       final todoResponse = TodoModel.fromJson(response.data);
-
       return todoResponse;
     } on DioException catch (_) {
       return null;
